@@ -59,6 +59,11 @@ export default function HomeScreen() {
     );
   }
 
+  // Delete a task by id
+  function deleteTask(id: string) {
+    setTasks(previousTasks => previousTasks.filter(task => task.id !== id));
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>TaskMate</Text>
@@ -91,10 +96,17 @@ export default function HomeScreen() {
             style={styles.taskItem}
             onPress={() => toggleTask(item.id)}
           >
-            <Text style={styles.taskText}>
+            <Text style={[styles.taskText, item.completed && styles.taskTextCompleted]}>
               {item.completed ? '✅' : '⬜'}{' '}
               {item.title}
             </Text>
+
+            <Pressable
+              style={styles.deleteButton}
+              onPress={() => deleteTask(item.id)}
+            >
+              <Text style={styles.deleteButtonText}>Delete</Text>
+            </Pressable>
           </Pressable>
         )}
         ListEmptyComponent={
@@ -157,14 +169,40 @@ const styles = StyleSheet.create({
 
   taskItem: {
     backgroundColor: '#FFFFFF',
-    padding: 18,
+    padding: 12,
     borderRadius: 12,
     marginBottom: 12,
+    
+    // layout: text left, delete button right
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
   taskText: {
     fontSize: 16,
     color: '#1E293B',
+    flexShrink: 1,
+    marginRight: 12,
+  },
+
+  // applied when task.completed === true
+  taskTextCompleted: {
+    textDecorationLine: 'line-through',
+    color: '#64748B',
+  },
+
+  deleteButton: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+
+  deleteButtonText: {
+    color: '#EF4444',
+    fontSize: 14,
+    fontWeight: '600',
   },
 
   emptyText: {
